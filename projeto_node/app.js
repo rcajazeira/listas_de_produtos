@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -6,24 +5,28 @@ const cheerio = require('cheerio');
 const app = express();
 const PORT = 3000;
 
+// Endpoint para raspagem de produtos da Amazon
 app.get('/api/scrape', async (req, res) => {
     const keyword = req.query.keyword;
 
+    // Verificar se a palavra-chave foi fornecida
     if (!keyword) {
         return res.status(400).json({ error: 'Palavra-chave não fornecida' });
     }
 
     try {
+        // Buscar conteúdo da página de resultados de pesquisa da Amazon
         const response = await axios.get(`https://www.amazon.com/s?k=${keyword}`);
         const html = response.data;
         const $ = cheerio.load(html);
 
+        // Extrair detalhes dos produtos da primeira página de resultados
         const products = [];
 
         $('.s-result-item').each((index, element) => {
-            const title = $(element).find('.a-text-normal').text();
-            const rating = $(element).find('.a-icon-star-small').text();
-            const reviews = $(element).find('.a-size-small').text();
+            const title = $(element).find('.a-text-normal').text().trim();
+            const rating = $(element).find('.a-icon-star-small').text().trim();
+            const reviews = $(element).find('.a-size-small').text().trim();
             const imageUrl = $(element).find('.s-image').attr('src');
 
             products.push({
@@ -44,3 +47,4 @@ app.get('/api/scrape', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+
