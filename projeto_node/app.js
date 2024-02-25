@@ -5,6 +5,11 @@ const cheerio = require('cheerio');
 const app = express();
 const PORT = 3000;
 
+// Rota de boas-vindas para a raiz do servidor
+app.get('/', (req, res) => {
+    res.send('Bem-vindo à página inicial');
+});
+
 // Endpoint para raspagem de produtos da Amazon
 app.get('/api/scrape', async (req, res) => {
     const keyword = req.query.keyword;
@@ -47,4 +52,3 @@ app.get('/api/scrape', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
-
