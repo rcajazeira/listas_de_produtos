@@ -3,7 +3,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const app = express();
-const PORT = 3001;
+const PORT = 3000;
 
 // Rota de boas-vindas para a raiz do servidor
 app.get('/', (req, res) => {
