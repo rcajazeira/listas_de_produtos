@@ -10,7 +10,6 @@ app.get('/', (req, res) => {
     res.send('Bem-vindo à página inicial');
 });
 
-
 // Endpoint para raspagem de produtos da Amazon
 app.get('/api/scrape', async (req, res) => {
     const keyword = req.query.keyword;
@@ -21,15 +20,23 @@ app.get('/api/scrape', async (req, res) => {
     }
 
     try {
+    
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        };
+
         // Buscar conteúdo da página de resultados de pesquisa da Amazon com base na palavra-chave
-        const response = await axios.get(`https://www.amazon.com/s?k=${keyword}`);
+        const response = await axios.get(`https://www.amazon.com/s?k=${keyword}`, { headers });
+        
         const html = response.data;
         const $ = cheerio.load(html);
-
+        //console.log('HTML:', html);
+        
         // Extrair detalhes dos produtos da primeira página de resultados
         const products = [];
 
         $('.s-result-item').each((index, element) => {
+        
             const title = $(element).find('.a-text-normal').text().trim();
             const rating = $(element).find('.a-icon-star-small').text().trim();
             const reviews = $(element).find('.a-size-small').text().trim();
@@ -53,4 +60,3 @@ app.get('/api/scrape', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
-
